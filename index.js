@@ -7,7 +7,7 @@ const inquirer = require('inquirer');
 
 const team = [];
 
-const createEmployees = () => {
+const createEmployee = () => {
     return inquirer.prompt([
         {
             type: 'list',
@@ -15,5 +15,99 @@ const createEmployees = () => {
             message: 'Choose the employee\'s role',
             choices: ['Engineer', 'Intern'],
         },
+        {
+            type: 'input',
+            name: 'name',
+            message: 'What\'s the employee\'s name?',
+            validate: nameInput => {
+                if (nameInput) {
+                    return true;
+                } else {
+                    console.log('Enter the employee\'s name');
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'id',
+            message: 'Enter the employee\'s id',
+            validate: nameInput => {
+                if (isNan(nameInput)) {
+                    console.log('Enter the employee\'s id');
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'email',
+            message: 'Enter the employee\'s email',
+            validate: email => {
+                valid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
+                if (valid) {
+                    return true;
+                } else {
+                    console.log('Enter the employee\'s email')
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'github',
+            message: 'Enter the employee\'s github username',
+            when: (input) => input.role === "Engineer",
+            validate: nameInput => {
+                if (nameInput) {
+                    return true;
+                } else {
+                    console.log('Enter the employee\'s github username')
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'school',
+            message: 'Enter intern\'s school',
+            when: (input) => input.role === "Intern",
+            validate: nameInput => {
+                if (nameInput) {
+                    return true;
+                } else {
+                    console.log('Enter the intern\'s school')
+                }
+            }
+        },
+        {
+            type: 'confirm',
+            name: 'confirmCreateEmployee',
+            message: 'Would you like to add another employee to your organization?',
+            default: false
+        },
+    ]).then(employeeData => {
+        const { name, id, email, role, github, school, confirmCreateEmployee } = employeeData;
+        let employee;
+        if (role === 'Engineer'){
+            employee = new Engineer (name, id, email, github);
+            console.log(employee);
+        } else if (role === 'Intern'){
+            employee = new Intern (name, id, email, school);
+            console.log(employee);
+        }
+        team.push(employee);
+        if (confirmCreateEmployee) {
+            return createEmployee(team);
+        } else {
+            return team;
+        }
+    })
+};
+
+const createManager = () => {
+    return inquirer.prompt([
+        {}
     ])
 }
