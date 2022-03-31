@@ -4,6 +4,7 @@ const Manager = require('./lib/manager');
 
 const fs = require('fs');
 const inquirer = require('inquirer');
+const { writeFile } = require('fs/promises');
 
 const team = [];
 
@@ -108,6 +109,77 @@ const createEmployee = () => {
 
 const createManager = () => {
     return inquirer.prompt([
-        {}
-    ])
+        {
+            type: 'input',
+            name: 'name',
+            message: 'Who is the manager?',
+            validate: nameInput => {
+                if (nameInput) {
+                    return true;
+                } else {
+                    console.log('Enter the manager\'s name');
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'id',
+            message: 'Enter the manager\'s id',
+            validate: nameInput => {
+                if (isNan(nameInput)) {
+                    console.log('Enter the manager\'s id');
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'email',
+            message: 'Enter the manager\'s email',
+            validate: email => {
+                valid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
+                if (valid) {
+                    return true;
+                } else {
+                    console.log('Enter the an email');
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'officeNum',
+            message: 'Enter the manager\'s office number',
+            validate: nameInput => {
+                if (isNan(nameInput)) {
+                    console.log('Enter the the office number');
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        },
+    ]).then(managerInput => {
+        const { name, id, email, officeNum } = managerInput;
+        const manager = new Manager (name, id, email, officeNum);
+        team.push(manager);
+        console.log(manager);
+    })
+};
+
+const writeFile = data => {
+    fs.writeFile()
 }
+
+createManager()
+.then(createEmployee)
+.then(team => {
+    return teamProfileHTML(team);
+}).then(pageHTML => {
+    return writeFile(pageHTML);
+}).catch(err => {
+    console.error(err);
+});
