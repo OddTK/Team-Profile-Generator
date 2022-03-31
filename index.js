@@ -1,10 +1,11 @@
+const teamHTML = require('./src/teamHTML')
+
 const Intern = require('./lib/intern');
 const Engineer = require('./lib/engineer');
 const Manager = require('./lib/manager');
 
 const fs = require('fs');
 const inquirer = require('inquirer');
-const { writeFile } = require('fs/promises');
 
 const team = [];
 
@@ -34,7 +35,7 @@ const createEmployee = () => {
             name: 'id',
             message: 'Enter the employee\'s id',
             validate: nameInput => {
-                if (isNan(nameInput)) {
+                if (!nameInput) {
                     console.log('Enter the employee\'s id');
                     return false;
                 } else {
@@ -127,7 +128,7 @@ const createManager = () => {
             name: 'id',
             message: 'Enter the manager\'s id',
             validate: nameInput => {
-                if (isNan(nameInput)) {
+                if (!nameInput) {
                     console.log('Enter the manager\'s id');
                     return false;
                 } else {
@@ -154,7 +155,7 @@ const createManager = () => {
             name: 'officeNum',
             message: 'Enter the manager\'s office number',
             validate: nameInput => {
-                if (isNan(nameInput)) {
+                if (!nameInput) {
                     console.log('Enter the the office number');
                     return false;
                 } else {
@@ -171,13 +172,20 @@ const createManager = () => {
 };
 
 const writeFile = data => {
-    fs.writeFile()
+    fs.writeFile('./dist/index.html', data, err => {
+        if (err) {
+            console.log(err);
+            return;
+        } else {
+            console.log('Team profile successfully created')
+        }
+    })
 }
 
 createManager()
 .then(createEmployee)
 .then(team => {
-    return teamProfileHTML(team);
+    return teamHTML(team);
 }).then(pageHTML => {
     return writeFile(pageHTML);
 }).catch(err => {
